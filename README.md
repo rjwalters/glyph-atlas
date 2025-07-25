@@ -12,7 +12,7 @@
 
 ## Demo
 
-You can interact with the tool directly in your browser. Here's what you can do:
+You can interact with the tool directly in your browser at https://rjwalters.github.io/glyph-atlas/. Here's what you can do:
 
 1. Generate a font sprite atlas.
 2. Render custom text using the generated atlas with emojis.
@@ -20,7 +20,7 @@ You can interact with the tool directly in your browser. Here's what you can do:
 
 ## Installation
 
-To use the Glyph Atlas tool, simply clone or download the repository and open the `index.html` file in your browser.
+To use the Glyph Atlas tool locally, simply clone or download the repository and open the `index.html` file in your browser.
 
 ```bash
 git clone https://github.com/rjwalters/glyph-atlas.git
