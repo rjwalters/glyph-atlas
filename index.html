@@ -566,9 +566,16 @@
           rows: ROWS,
           fontSize: FONT_SIZE,
           emojiCodes: EMOJI_CODES
-        },
-        characters: atlasData
+        }
       };
+
+      // Add character data at the root level as arrays [x, y, width, height]
+      for (const [char, bounds] of Object.entries(atlasData)) {
+        if (char !== 'metadata') {
+          // Convert object format to array format
+          jsonData[char] = [bounds.x, bounds.y, bounds.width, bounds.height];
+        }
+      }
 
       const json = JSON.stringify(jsonData, null, 2);
       const scale = document.getElementById('atlasScaleInput').value;
