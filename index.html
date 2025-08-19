@@ -221,8 +221,10 @@
           <input type="number" id="spacingInput" value="-10" min="-10" max="20">
         </label>
         <button id="renderBtn">Render Text</button>
+        <button id="saveRenderedBtn">Save Image</button>
       </div>
       <canvas id="renderCanvas"></canvas>
+      <div class="info" id="renderInfo">Canvas size: 0×0px</div>
       <div class="info" id="emojiCodesInfo">
         <!-- Emoji codes will be populated by JavaScript -->
       </div>
@@ -248,7 +250,7 @@
       // Emoji mappings
       "👈": "👈", "👆": "👆", "👉": "👉", "👇": "👇",
       "😀": "😀", "😢": "😢", "😡": "😡", "👽": "👽",
-      "✨": "✨", "💀": "💀", "💖": "💖"
+      "✨": "✨", "💀": "💀", "💖": "💖", "💩": "💩"
     };
 
     // Emoji code mappings
@@ -263,7 +265,8 @@
       ":alien:": "👽",
       ":sparkles:": "✨",
       ":skull:": "💀",
-      ":love:": "💖"
+      ":love:": "💖",
+      ":poo:": "💩"
     };
 
     // Base font atlas configuration
@@ -458,6 +461,7 @@
 
       renderCanvas.width = totalWidth;
       renderCanvas.height = totalHeight;
+      document.getElementById('renderInfo').textContent = `Canvas size: ${totalWidth}×${totalHeight}px`;
 
       // Clear canvas with transparency
       renderCtx.clearRect(0, 0, totalWidth, totalHeight);
@@ -534,6 +538,39 @@
       link.click();
       URL.revokeObjectURL(url);
     }
+
+    document.getElementById('saveRenderedBtn').addEventListener('click', () => {
+      // Create a temporary canvas with transparency
+      const tempCanvas = document.createElement('canvas');
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCanvas.width = renderCanvas.width;
+      tempCanvas.height = renderCanvas.height;
+      
+      // Copy only the text (skip the background)
+      tempCtx.drawImage(renderCanvas, 0, 0);
+      
+      // Remove the background by getting image data
+      const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+      const data = imageData.data;
+      
+      // Make background pixels transparent (assuming background is #111)
+      for (let i = 0; i < data.length; i += 4) {
+        if (data[i] === 17 && data[i + 1] === 17 && data[i + 2] === 17) {
+          data[i + 3] = 0; // Set alpha to 0 for background pixels
+        }
+      }
+      
+      tempCtx.putImageData(imageData, 0, 0);
+      
+      // Save as PNG
+      tempCanvas.toBlob(blob => {
+        const link = document.createElement('a');
+        link.download = 'rendered_text.png';
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        URL.revokeObjectURL(link.href);
+      }, 'image/png');
+    });
 
     // Event listeners
     document.getElementById('generateBtn').addEventListener('click', generateFontAtlas);
